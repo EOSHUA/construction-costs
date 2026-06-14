@@ -245,11 +245,53 @@ body{
   .grid2,.grid3,.grid4{grid-template-columns:1fr;}
   .header{flex-direction:column;align-items:flex-start;}
   .header h1{font-size:24px;}
-  .tabs{gap:8px;}
-.tab{flex:1 1 calc(33% - 8px);justify-content:center;padding:8px 6px;font-size:11px;gap:4px;}
-.tab i{font-size:14px;}  .metric .val{font-size:24px;}
+  
+  .metric .val{font-size:24px;}
   .card{padding:18px;}
+    /* טאבים במובייל */
+  .tabs{
+  gap:8px;
+  overflow-x:auto;
+  flex-wrap:nowrap;
+  padding-bottom:6px;
 }
+
+.tab{
+  flex:0 0 auto;
+  min-width:140px;
+  justify-content:center;
+  padding:8px 6px;
+  font-size:11px;
+  gap:4px;
+}
+
+.tab i{
+  font-size:14px;
+}
+  /* טבלת יחידות */
+  .unit-table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  .unit-table th,
+  .unit-table td{
+    min-width:120px;
+  }
+
+  .unit-table td:first-child{
+    min-width:180px;
+  }
+  .dynamic-row{
+  grid-template-columns:1fr;
+}
+
+  .remove-btn{
+  width:100%;
+}
+}
+
 ::-webkit-scrollbar{width:8px;}
 ::-webkit-scrollbar-track{background:#0f1729;}
 ::-webkit-scrollbar-thumb{background:#334155;border-radius:999px;}
