@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניתוח פרויקט בניה — ביתר עילית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#070b14;
+  --bg2:#0f1729;
+  --bg3:#131d33;
+  --bg4:#1a2642;
+  --card:rgba(17,24,39,0.72);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#f3f7ff;
+  --text2:#a6b0c3;
+  --text3:#667089;
+  --accent:#4f8cff;
+  --accent2:#2563eb;
+  --green:#34d399;
+  --red:#fb7185;
+  --amber:#fbbf24;
+  --purple:#a78bfa;
+  --teal:#2dd4bf;
+  --radius:22px;
+  --radius-sm:14px;
+  --shadow:0 10px 40px rgba(0,0,0,0.35);
+  --glow:0 0 0 1px rgba(255,255,255,0.03),0 10px 35px rgba(37,99,235,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Heebo',sans-serif;
+  direction:rtl;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top right,#17346d 0%,transparent 24%),
+    radial-gradient(circle at bottom left,#0d6d63 0%,transparent 18%),
+    linear-gradient(180deg,#050816 0%,#0a1020 100%);
+  min-height:100vh;
+  padding:32px;
+}
+.header{display:flex;align-items:center;gap:18px;margin-bottom:28px;}
+.header-icon{
+  width:68px;height:68px;border-radius:22px;
+  background:linear-gradient(135deg,#2563eb,#7c3aed);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;color:white;
+  box-shadow:0 10px 30px rgba(79,140,255,0.35);
+}
+.header h1{font-size:34px;font-weight:700;letter-spacing:-0.5px;}
+.header p{margin-top:6px;font-size:15px;color:var(--text2);}
+.tabs{
+  display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;
+  padding:10px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:24px;
+  backdrop-filter:blur(20px);
+  box-shadow:var(--shadow);
+}
+.tab{
+  position:relative;display:flex;align-items:center;gap:10px;
+  padding:14px 22px;border-radius:16px;
+  font-size:15px;font-weight:600;color:#94a3b8;
+  cursor:pointer;transition:all .25s ease;
+  border:none;background:transparent;font-family:'Heebo',sans-serif;
+}
+.tab:hover{background:rgba(255,255,255,0.05);color:white;transform:translateY(-2px);}
+.tab.active{
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
+  color:white;
+  box-shadow:0 10px 24px rgba(59,130,246,0.35);
+}
+.tab i{font-size:19px;}
+.panel{display:none;animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.card{
+  position:relative;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,0.06);
+  backdrop-filter:blur(22px);
+  border-radius:var(--radius);
+  padding:26px;margin-bottom:22px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);
+  pointer-events:none;
+}
+.card:hover{
+  border-color:rgba(79,140,255,0.25);
+  box-shadow:0 0 0 1px rgba(79,140,255,0.12),0 20px 40px rgba(0,0,0,0.45);
+}
+.card-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:700;margin-bottom:22px;
+  color:white;letter-spacing:0.2px;
+}
+.card-title i{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);
+  color:white;font-size:18px;
+}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.field{display:flex;flex-direction:column;gap:9px;}
+.field label{font-size:13px;color:var(--text2);font-weight:500;}
+.field input,.field select{
+  height:54px;border-radius:16px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));
+  color:white;padding:0 18px;font-size:15px;
+  transition:all .2s ease;outline:none;
+  font-family:'Heebo',sans-serif;
+  direction:ltr;text-align:right;
+}
+.field input[type="text"]{direction:rtl;text-align:right;}
+.field input:hover{border-color:rgba(255,255,255,0.15);}
+.field input:focus{border-color:#3b82f6;box-shadow:0 0 0 4px rgba(59,130,246,0.14);}
+.field input[readonly]{background:rgba(52,211,153,0.08);color:#6ee7b7;font-weight:700;}
+.unit-table{width:100%;border-collapse:separate;border-spacing:0 12px;}
+.unit-table thead th{font-size:12px;color:var(--text3);font-weight:700;padding:0 14px 10px;}
+.unit-table tbody tr{background:rgba(255,255,255,0.03);transition:all .2s ease;}
+.unit-table tbody tr:hover{transform:translateY(-2px);background:rgba(255,255,255,0.05);}
+.unit-table td{
+  padding:18px 14px;
+  border-top:1px solid rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.unit-table td:first-child{border-right:1px solid rgba(255,255,255,0.04);border-radius:18px 0 0 18px;}
+.unit-table td:last-child{border-left:1px solid rgba(255,255,255,0.04);border-radius:0 18px 18px 0;}
+.unit-table input{
+  width:100%;height:48px;border:none;border-radius:14px;
+  background:rgba(255,255,255,0.05);color:white;
+  padding:0 14px;font-size:14px;font-family:'Heebo',sans-serif;
+  direction:ltr;text-align:right;
+}
+.unit-table input[type="text"]{direction:rtl;}
+.unit-table input:focus{outline:none;border:1px solid #3b82f6;}
+.unit-name{font-weight:600;color:white;font-size:14px;}
+.unit-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.metric{
+  position:relative;padding:24px;border-radius:24px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
+  border:1px solid rgba(255,255,255,0.05);
+  overflow:hidden;box-shadow:var(--glow);
+}
+.metric::after{
+  content:"";position:absolute;top:-40px;left:-40px;
+  width:120px;height:120px;
+  background:rgba(255,255,255,0.04);border-radius:50%;
+}
+.metric .lbl{font-size:12px;color:var(--text2);margin-bottom:12px;}
+.metric .val{font-size:28px;font-weight:800;letter-spacing:-1px;}
+.metric.good .val{color:var(--green);}
+.metric.bad .val{color:var(--red);}
+.metric.warn .val{color:var(--amber);}
+.metric.purple .val{color:var(--purple);}
+.metric .sub{margin-top:8px;font-size:12px;color:var(--text3);}
+.calc-btn{
+  height:56px;border:none;border-radius:18px;padding:0 26px;
+  font-size:15px;font-weight:700;color:white;cursor:pointer;
+  transition:all .25s ease;font-family:'Heebo',sans-serif;
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
+  box-shadow:0 10px 24px rgba(37,99,235,0.35);
+  margin-top:12px;margin-left:10px;display:inline-flex;align-items:center;gap:8px;
+}
+.calc-btn:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(37,99,235,0.45);}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 10px 24px rgba(239,68,68,0.3);}
+.summary-total{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 24px;background:rgba(255,255,255,0.04);
+  border-radius:18px;margin-top:14px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+.summary-total .label{font-size:14px;color:var(--text2);}
+.summary-total .value{font-size:28px;font-weight:800;}
+.badge{padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;}
+.badge-new{background:rgba(52,211,153,0.12);color:#6ee7b7;border:1px solid rgba(52,211,153,0.25);}
+.badge-renov{background:rgba(251,191,36,0.12);color:#fde68a;border:1px solid rgba(251,191,36,0.25);}
+.loan-block{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:20px;padding:22px;margin-bottom:16px;
+}
+.loan-block-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.loan-block-title .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.cf-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;
+}
+.cf-row:last-child{border-bottom:none;}
+.cf-row .item{color:var(--text2);display:flex;align-items:center;gap:8px;}
+.cf-row .item i{font-size:15px;color:var(--text3);}
+.cf-row .amount{font-weight:700;direction:ltr;}
+.positive{color:var(--green);}
+.negative{color:var(--red);}
+.total-row{border-top:2px solid rgba(255,255,255,0.1) !important;padding-top:16px !important;}
+.total-row .item{color:white;font-weight:700;font-size:15px;}
+.total-row .amount{font-size:20px;}
+.dynamic-costs{display:flex;flex-direction:column;gap:12px;}
+.dynamic-row{
+  display:grid;grid-template-columns:1.6fr 1fr auto;
+  gap:14px;align-items:end;
+}
+.remove-btn{
+  height:54px;width:54px;border:none;border-radius:16px;
+  background:rgba(239,68,68,0.12);color:#f87171;
+  cursor:pointer;transition:.2s;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+}
+.remove-btn:hover{background:rgba(239,68,68,0.22);transform:translateY(-2px);}
+.add-cost-btn{
+  margin-top:16px;height:52px;width:100%;border:none;border-radius:16px;
+  cursor:pointer;font-size:14px;font-weight:700;color:white;font-family:'Heebo',sans-serif;
+  background:linear-gradient(135deg,#0f766e,#14b8a6);
+  transition:.25s;box-shadow:0 8px 20px rgba(20,184,166,0.25);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.add-cost-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(20,184,166,0.35);}
+.save-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;
+  background:rgba(52,211,153,0.12);color:#6ee7b7;
+  border:1px solid rgba(52,211,153,0.2);
+  margin-right:12px;vertical-align:middle;
+  transition:opacity .3s;
+}
+.note{font-size:12px;color:var(--text3);margin-top:8px;line-height:1.6;}
+.timeline-bar{display:flex;height:36px;border-radius:14px;overflow:hidden;gap:3px;margin:12px 0 8px;}
+.tbar{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#0a1020;transition:width .3s;}
+@media(max-width:1200px){.grid4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){.grid3{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){
+  body{padding:16px;}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+  .header{flex-direction:column;align-items:flex-start;}
+  .header h1{font-size:24px;}
+  .tabs{gap:8px;}
+  .tab{flex:1 1 calc(50% - 8px);justify-content:center;padding:10px 14px;font-size:13px;}
+  .metric .val{font-size:24px;}
+  .card{padding:18px;}
+}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:#0f1729;}
+::-webkit-scrollbar-thumb{background:#334155;border-radius:999px;}
+::-webkit-scrollbar-thumb:hover{background:#475569;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon"><i class="ti ti-building-skyscraper"></i></div>
+  <div>
+    <h1>ניתוח פרויקט בניה — ביתר עילית</h1>
+    <p>מחשבון כדאיות, מימון ותזרים שכירות &nbsp;·&nbsp; <span class="save-badge" id="saveBadge"><i class="ti ti-device-floppy"></i> נשמר אוטומטית</span></p>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="project"><i class="ti ti-home-2"></i> יחידות</button>
+  <button class="tab" data-tab="costs"><i class="ti ti-tools"></i> עלויות בניה</button>
+  <button class="tab" data-tab="finance"><i class="ti ti-credit-card"></i> מימון</button>
+  <button class="tab" data-tab="results"><i class="ti ti-chart-bar"></i> כדאיות</button>
+  <button class="tab" data-tab="rental"><i class="ti ti-cash"></i> תזרים שכירות</button>
+</div>
+
+<div class="panel active" id="panel-project">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-layout-list"></i> יחידות הדיור — שטחים ושווי שוק</div>
+    <table class="unit-table">
+      <thead><tr>
+        <th style="width:24%">יחידה</th>
+        <th style="width:22%">שם מותאם</th>
+        <th style="width:12%">שטח מ"ר</th>
+        <th style="width:22%">שווי שוק (₪)</th>
+        <th style="width:20%">סטטוס</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><div class="unit-name">דירה קרקע</div><div class="unit-sub">מורחבת + מרפסת</div></td><td><input type="text" id="u1_name" value="דירה קרקע גדולה" oninput="autoSave()"></td><td><input type="number" id="u1_sqm" value="80" oninput="autoSave()"></td><td><input type="number" id="u1_val" value="1400000" oninput="autoSave();calcAll()"></td><td><span class="badge badge-renov">שיפוץ+הרחבה</span></td></tr>
+        <tr><td><div class="unit-name">יחידה קטנה קרקע</div><div class="unit-sub">חלוקה נוספת</div></td><td><input type="text" id="u2_name" value="סטודיו קרקע" oninput="autoSave()"></td><td><input type="number" id="u2_sqm" value="35" oninput="autoSave()"></td><td><input type="number" id="u2_val" value="700000" oninput="autoSave();calcAll()"></td><td><span class="badge badge-new">חדשה</span></td></tr>
+        <tr><td><div class="unit-name">קומה 1 — יחידה א</div><div class="unit-sub">קיימת + שיפוץ</div></td><td><input type="text" id="u3_name" value="יחידה א קומה 1" oninput="autoSave()"></td><td><input type="number" id="u3_sqm" value="60" oninput="autoSave()"></td><td><input type="number" id="u3_val" value="1100000" oninput="autoSave();calcAll()"></td><td><span class="badge badge-renov">שיפוץ</span></td></tr>
+        <tr><td><div class="unit-name">קומה 1 — יחידה ב</div><div class="unit-sub">קיימת + שיפוץ</div></td><td><input type="text" id="u4_name" value="יחידה ב קומה 1" oninput="autoSave()"></td><td><input type="number" id="u4_sqm" value="60" oninput="autoSave()"></td><td><input type="number" id="u4_val" value="1100000" oninput="autoSave();calcAll()"></td><td><span class="badge badge-renov">שיפוץ</span></td></tr>
+        <tr><td><div class="unit-name">קומה 2 — יחידה א</div><div class="unit-sub">בניה חדשה</div></td><td><input type="text" id="u5_name" value="יחידה א קומה 2" oninput="autoSave()"></td><td><input type="number" id="u5_sqm" value="65" oninput="autoSave()"></td><td><input type="number" id="u5_val" value="1200000" oninput="autoSave();calcAll()"></td><td><span class="badge badge-new">חדשה</span></td></tr>
+        <tr><td><div class="unit-name">קומה 2 — יחידה ב</div><div class="unit-sub">בניה חדשה</div></td><td><input type="text" id="u6_name" value="יחידה ב קומה 2" oninput="autoSave()"></td><td><input type="number" id="u6_sqm" value="65" oninput="autoSave()"></td><td><input type="number" id="u6_val" value="1200000" oninput="autoSave();calcAll()"></td><td><span class="badge badge-new">חדשה</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar"></i> רכישה ולוח זמנים</div>
+    <div class="grid3" style="margin-bottom:18px">
+      <div class="field"><label>מחיר רכישת הנכס (₪)</label><input type="number" id="purchase_price" value="2200000" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>תכנון ורישוי (חודשים)</label><input type="number" id="phase1_months" value="10" oninput="autoSave();updateTimeline()"></div>
+      <div class="field"><label>בניה ושיפוץ (חודשים)</label><input type="number" id="phase2_months" value="14" oninput="autoSave();updateTimeline()"></div>
+    </div>
+    <div class="grid3">
+      <div class="field"><label>גמר ואיכלוס (חודשים)</label><input type="number" id="phase3_months" value="2" oninput="autoSave();updateTimeline()"></div>
+    </div>
+    <div id="timeline_display" style="margin-top:14px;"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-costs">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-tools"></i> עלויות בניה — פירוט מלא</div>
+    <div class="dynamic-costs" id="dynamicCostsContainer"></div>
+    <button class="add-cost-btn" onclick="addCostField()"><i class="ti ti-plus"></i> הוסף שורת עלות</button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+    <button class="calc-btn" onclick="calcAll()"><i class="ti ti-calculator"></i> חשב עלויות</button>
+    <button class="calc-btn btn-red" onclick="resetAll()"><i class="ti ti-trash"></i> איפוס כל הנתונים</button>
+  </div>
+  <div id="cost_summary" style="margin-top:1.5rem;"></div>
+</div>
+
+<div class="panel" id="panel-finance">
+  <div class="loan-block">
+    <div class="loan-block-title"><div class="dot" style="background:#4f8cff"></div> משכנתא 1 — רכישת הנכס</div>
+    <div class="grid3">
+      <div class="field"><label>שם ההלוואה</label><input type="text" id="m1_name" value="משכנתא רכישה — בנק הפועלים" oninput="autoSave()"></div>
+      <div class="field"><label>סכום (₪)</label><input type="number" id="m1_amount" value="1500000" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>הון עצמי לרכישה (₪)</label><input type="number" id="equity_purchase" value="700000" oninput="autoSave()"></div>
+      <div class="field"><label>ריבית שנתית (%)</label><input type="number" id="m1_rate" value="4.5" step="0.1" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>תקופה (שנים)</label><input type="number" id="m1_years" value="25" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>החזר חודשי (מחושב)</label><input type="text" id="m1_monthly" readonly></div>
+    </div>
+  </div>
+  <div class="loan-block">
+    <div class="loan-block-title"><div class="dot" style="background:#2dd4bf"></div> משכנתא 2 / ליווי בנקאי — בניה</div>
+    <div class="grid3">
+      <div class="field"><label>שם ההלוואה</label><input type="text" id="m2_name" value="ליווי בנקאי — בניה" oninput="autoSave()"></div>
+      <div class="field"><label>סכום (₪)</label><input type="number" id="m2_amount" value="1200000" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>הון עצמי לבניה (₪)</label><input type="number" id="equity_build" value="500000" oninput="autoSave()"></div>
+      <div class="field"><label>ריבית שנתית (%)</label><input type="number" id="m2_rate" value="6" step="0.1" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>תקופה (שנים)</label><input type="number" id="m2_years" value="20" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>החזר חודשי (מחושב)</label><input type="text" id="m2_monthly" readonly></div>
+    </div>
+    <p class="note">* הלוואת בניה נמשכת בהדרגה — עלות מימון מחושבת על ~50% מהקרן</p>
+  </div>
+  <div class="loan-block">
+    <div class="loan-block-title"><div class="dot" style="background:#fbbf24"></div> הלוואה נוספת 1</div>
+    <div class="grid3">
+      <div class="field"><label>שם ההלוואה</label><input type="text" id="l1_name" value="הלוואה לגימור — משפחה" oninput="autoSave()"></div>
+      <div class="field"><label>סכום (₪)</label><input type="number" id="l1_amount" value="200000" oninput="autoSave();calcAll()"></div>
+      <div class="field"></div>
+      <div class="field"><label>ריבית שנתית (%)</label><input type="number" id="l1_rate" value="3" step="0.1" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>תקופה (שנים)</label><input type="number" id="l1_years" value="5" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>החזר חודשי (מחושב)</label><input type="text" id="l1_monthly" readonly></div>
+    </div>
+  </div>
+  <div class="loan-block">
+    <div class="loan-block-title"><div class="dot" style="background:#a78bfa"></div> הלוואה נוספת 2</div>
+    <div class="grid3">
+      <div class="field"><label>שם ההלוואה</label><input type="text" id="l2_name" value="הלוואה עסקית — בנק" oninput="autoSave()"></div>
+      <div class="field"><label>סכום (₪)</label><input type="number" id="l2_amount" value="0" oninput="autoSave();calcAll()"></div>
+      <div class="field"></div>
+      <div class="field"><label>ריבית שנתית (%)</label><input type="number" id="l2_rate" value="5" step="0.1" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>תקופה (שנים)</label><input type="number" id="l2_years" value="7" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>החזר חודשי (מחושב)</label><input type="text" id="l2_monthly" readonly></div>
+    </div>
+  </div>
+  <div class="loan-block">
+    <div class="loan-block-title"><div class="dot" style="background:#fb7185"></div> הלוואה נוספת 3</div>
+    <div class="grid3">
+      <div class="field"><label>שם ההלוואה</label><input type="text" id="l3_name" value="אשראי ספקים" oninput="autoSave()"></div>
+      <div class="field"><label>סכום (₪)</label><input type="number" id="l3_amount" value="0" oninput="autoSave();calcAll()"></div>
+      <div class="field"></div>
+      <div class="field"><label>ריבית שנתית (%)</label><input type="number" id="l3_rate" value="7" step="0.1" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>תקופה (שנים)</label><input type="number" id="l3_years" value="3" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>החזר חודשי (מחושב)</label><input type="text" id="l3_monthly" readonly></div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calcAll()"><i class="ti ti-refresh"></i> עדכן חישובי מימון</button>
+  <div id="finance_summary" style="margin-top:1rem;"></div>
+</div>
+
+<div class="panel" id="panel-results">
+  <div class="grid4" id="results_metrics" style="margin-bottom:1.5rem;"></div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-chart-bar"></i> עלות מול שווי שוק</div>
+    <div style="position:relative;width:100%;height:300px;"><canvas id="profitChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-trending-up"></i> ניתוח רגישות — ROI לפי שינוי שווי שוק</div>
+    <div style="position:relative;width:100%;height:240px;"><canvas id="sensitivityChart"></canvas></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-rental">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-home-dollar"></i> הכנסות שכירות — לפי יחידה</div>
+    <div class="grid3">
+      <div class="field"><label id="r1_label">שכ"ד — יחידה 1</label><input type="number" id="r1" value="4500" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label id="r2_label">שכ"ד — יחידה 2</label><input type="number" id="r2" value="2200" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label id="r3_label">שכ"ד — יחידה 3</label><input type="number" id="r3" value="3500" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label id="r4_label">שכ"ד — יחידה 4</label><input type="number" id="r4" value="3500" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label id="r5_label">שכ"ד — יחידה 5</label><input type="number" id="r5" value="3800" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label id="r6_label">שכ"ד — יחידה 6</label><input type="number" id="r6" value="3800" oninput="autoSave();calcAll()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-minus"></i> הוצאות שוטפות חודשיות</div>
+    <div class="grid3">
+      <div class="field"><label>ארנונה + ועד בית (₪)</label><input type="number" id="monthly_fees" value="1200" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>ניהול + תחזוקה (%)</label><input type="number" id="mgmt_pct" value="5" step="0.5" oninput="autoSave();calcAll()"></div>
+      <div class="field"><label>ריקנות ממוצעת (%)</label><input type="number" id="vacancy_pct" value="5" step="1" oninput="autoSave();calcAll()"></div>
+    </div>
+    <p class="note" style="margin-top:10px">* החזרי הלוואות נלקחים אוטומטית מלשונית המימון</p>
+  </div>
+  <button class="calc-btn" onclick="calcAll()"><i class="ti ti-calculator"></i> חשב תזרים</button>
+  <div id="cashflow_result" style="margin-top:1rem;"></div>
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-title"><i class="ti ti-chart-area"></i> תזרים חודשי — ויזואלי</div>
+    <div style="position:relative;width:100%;height:280px;"><canvas id="cashflowChart"></canvas></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function g(id){
+  const v=document.getElementById(id)?.value||'';
+  return parseFloat(v.toString().replace(/,/g,''))||0;
+}
+function gs(id){return document.getElementById(id)?.value||'';}
+function sv(id,val){const el=document.getElementById(id);if(el)el.value=val;}
+function fmt(n){return '₪'+Math.round(n).toLocaleString('he-IL');}
+function fmtM(n){
+  const abs=Math.abs(n);
+  if(abs>=1000000)return(n<0?'-':'')+'₪'+(abs/1000000).toFixed(2)+'M';
+  return '₪'+Math.round(n).toLocaleString('he-IL');
+}
+function fmtPct(n){return(n||0).toFixed(1)+'%';}
+function pmt(p,r,y){
+  if(!p||!r||!y)return 0;
+  const i=(r/100)/12,n=y*12;
+  return p*i*Math.pow(1+i,n)/(Math.pow(1+i,n)-1);
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('panel-'+this.dataset.tab)?.classList.add('active');
+    calcAll();
+  });
+});
+
+function updateTimeline(){
+  const p1=g('phase1_months'),p2=g('phase2_months'),p3=g('phase3_months'),total=p1+p2+p3;
+  if(!total)return;
+  const colors=['#4f8cff','#34d399','#fbbf24'],labels=['תכנון/רישוי','בניה','גמר'];
+  const pcts=[p1,p2,p3].map(v=>v/total*100);
+  document.getElementById('timeline_display').innerHTML=`
+    <div class="timeline-bar">
+      ${labels.map((l,i)=>`<div class="tbar" style="width:${pcts[i].toFixed(0)}%;background:${colors[i]}">${pcts[i]>10?l+' '+Math.round(pcts[i])+'%':''}</div>`).join('')}
+    </div>
+    <div style="display:flex;gap:20px;font-size:12px;color:var(--text2);margin-top:6px">
+      ${labels.map((l,i)=>`<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${colors[i]};margin-left:5px"></span>${l}: ${[p1,p2,p3][i]} חודשים</span>`).join('')}
+    </div>
+    <div style="margin-top:8px;font-size:13px;color:var(--text3)">סה"כ: <strong style="color:white">${total} חודשים</strong> (~${(total/12).toFixed(1)} שנים)</div>`;
+}
+
+const DEFAULT_COSTS=[
+  {label:'קבלן',value:1335000},{label:'שמירה',value:124000},
+  {label:'תשלום דיירים',value:200000},{label:'הוצאות ניקיון בניין וועד בית',value:1700},
+  {label:'מהנדס',value:12000},{label:'אדריכלית בונצל',value:10000},
+  {label:'אדריכלית וינברגר',value:10000},{label:'אגרות ביתר עירייה',value:8000},
+  {label:'מיזוג',value:42000},{label:'פיקוח',value:42500},
+  {label:'ריהוט',value:30000},{label:'בוטי מדידות',value:2000},
+  {label:'ביטון בדיקה',value:1500},{label:'חריגות',value:1500},
+  {label:'ניקיון לאחר שיפוץ',value:4000},{label:'מזוזות',value:2500},
+  {label:'פיקוח חשמל',value:3200},{label:'בניית מדרגות חיצוניות',value:10000},
+  {label:'פוטאש לדבר עם השכנים',value:10000},
+  {label:"הוצאת שוכרים סבב א'",value:13600},
+  {label:"הוצאת שוכרים סבב ב' בזמן הבניה",value:70000},
+  {label:'תשלום לגוטפרב על הרחבה + מדרגות',value:3000}
+];
+
+function loadCosts(){try{const s=localStorage.getItem('bitar_costs');return s?JSON.parse(s):[...DEFAULT_COSTS];}catch(e){return[...DEFAULT_COSTS];}}
+function saveCosts(){
+  const names=document.querySelectorAll('.cost-name'),vals=document.querySelectorAll('.cost-value'),data=[];
+  names.forEach((n,i)=>data.push({label:n.value,value:parseFloat(vals[i]?.value)||0}));
+  localStorage.setItem('bitar_costs',JSON.stringify(data));
+}
+function renderCosts(){
+  const container=document.getElementById('dynamicCostsContainer');
+  if(!container)return;
+  const costs=loadCosts();
+  container.innerHTML='';
+  costs.forEach((c,i)=>{
+    const row=document.createElement('div');
+    row.className='dynamic-row';
+    row.innerHTML=`
+      <div class="field"><label>שם ההוצאה</label>
+        <input type="text" class="cost-name" value="${c.label.replace(/"/g,'&quot;')}" oninput="saveCosts();calcAll()">
+      </div>
+      <div class="field"><label>סכום (₪)</label>
+        <input type="number" class="cost-value" value="${c.value}" oninput="saveCosts();calcAll()">
+      </div>
+      <button class="remove-btn" onclick="removeCost(${i})">🗑</button>`;
+    container.appendChild(row);
+  });
+}
+function addCostField(){
+  const costs=loadCosts();costs.push({label:'הוצאה חדשה',value:0});
+  localStorage.setItem('bitar_costs',JSON.stringify(costs));renderCosts();
+}
+function removeCost(i){
+  const costs=loadCosts();costs.splice(i,1);
+  localStorage.setItem('bitar_costs',JSON.stringify(costs));renderCosts();calcAll();
+}
+function getDynamicTotal(){
+  let t=0;document.querySelectorAll('.cost-value').forEach(v=>t+=parseFloat(v.value)||0);return t;
+}
+
+const SAVE_IDS=[
+  'u1_name','u1_sqm','u1_val','u2_name','u2_sqm','u2_val',
+  'u3_name','u3_sqm','u3_val','u4_name','u4_sqm','u4_val',
+  'u5_name','u5_sqm','u5_val','u6_name','u6_sqm','u6_val',
+  'purchase_price','phase1_months','phase2_months','phase3_months',
+  'm1_name','m1_amount','m1_rate','m1_years','equity_purchase',
+  'm2_name','m2_amount','m2_rate','m2_years','equity_build',
+  'l1_name','l1_amount','l1_rate','l1_years',
+  'l2_name','l2_amount','l2_rate','l2_years',
+  'l3_name','l3_amount','l3_rate','l3_years',
+  'r1','r2','r3','r4','r5','r6','monthly_fees','mgmt_pct','vacancy_pct'
+];
+function autoSave(){
+  const data={};
+  SAVE_IDS.forEach(id=>{const el=document.getElementById(id);if(el)data[id]=el.value;});
+  localStorage.setItem('bitar_fields',JSON.stringify(data));
+  const badge=document.getElementById('saveBadge');
+  if(badge){badge.style.opacity='1';setTimeout(()=>badge.style.opacity='0.5',1000);}
+}
+function loadSavedFields(){
+  try{
+    const s=localStorage.getItem('bitar_fields');if(!s)return;
+    const data=JSON.parse(s);
+    SAVE_IDS.forEach(id=>{if(data[id]!==undefined){const el=document.getElementById(id);if(el)el.value=data[id];}});
+  }catch(e){}
+}
+function resetAll(){
+  if(!confirm('למחוק את כל הנתונים ולחזור לברירות המחדל?'))return;
+  localStorage.removeItem('bitar_fields');localStorage.removeItem('bitar_costs');location.reload();
+}
+
+let pCI,sCI,cCI;
+function calcAll(){
+  for(let i=1;i<=6;i++){
+    const name=gs('u'+i+'_name')||'יחידה '+i;
+    const el=document.getElementById('r'+i+'_label');
+    if(el)el.textContent='שכ"ד — '+name+' (₪/חודש)';
+  }
+  const loans=[
+    {id:'m1',name:gs('m1_name'),amount:g('m1_amount'),rate:g('m1_rate'),years:g('m1_years')},
+    {id:'m2',name:gs('m2_name'),amount:g('m2_amount'),rate:g('m2_rate'),years:g('m2_years')},
+    {id:'l1',name:gs('l1_name'),amount:g('l1_amount'),rate:g('l1_rate'),years:g('l1_years')},
+    {id:'l2',name:gs('l2_name'),amount:g('l2_amount'),rate:g('l2_rate'),years:g('l2_years')},
+    {id:'l3',name:gs('l3_name'),amount:g('l3_amount'),rate:g('l3_rate'),years:g('l3_years')}
+  ];
+  let totalMonthly=0,totalLoanAmount=0;
+  loans.forEach(l=>{
+    totalLoanAmount+=l.amount;
+    const m=pmt(l.amount,l.rate,l.years);
+    totalMonthly+=m;
+    sv(l.id+'_monthly',l.amount>0?fmt(m):'—');
+  });
+  const dc=getDynamicTotal(),pp=g('purchase_price');
+  const bm=g('phase1_months')+g('phase2_months')+g('phase3_months');
+  const fc=(g('m2_amount')/2)*(g('m2_rate')/100)*(bm/12);
+  const mdb=pmt(g('m1_amount'),g('m1_rate'),g('m1_years'))*bm;
+  const tf=fc+mdb,tc=pp+dc+tf;
+  const mv=g('u1_val')+g('u2_val')+g('u3_val')+g('u4_val')+g('u5_val')+g('u6_val');
+  const profit=mv-tc,roi=tc?(profit/tc)*100:0;
+  const equity=g('equity_purchase')+g('equity_build'),roiE=equity?(profit/equity)*100:0;
+
+  const fs=document.getElementById('finance_summary');
+  if(fs)fs.innerHTML=`
+    <div class="summary-total"><span class="label">סה"כ חוב — כל ההלוואות</span><span class="value" style="color:var(--red)">${fmtM(totalLoanAmount)}</span></div>
+    <div class="summary-total" style="margin-top:8px"><span class="label">סה"כ החזר חודשי</span><span class="value" style="color:var(--amber)">${fmt(totalMonthly)}</span></div>`;
+
+  const cs=document.getElementById('cost_summary');
+  if(cs)cs.innerHTML=`<div class="grid3" style="gap:14px">
+    <div class="metric"><div class="lbl">עלויות בניה</div><div class="val">${fmtM(dc)}</div></div>
+    <div class="metric warn"><div class="lbl">עלות מימון</div><div class="val">${fmtM(tf)}</div></div>
+    <div class="metric bad"><div class="lbl">עלות כוללת</div><div class="val">${fmtM(tc)}</div></div>
+  </div>`;
+
+  const rm=document.getElementById('results_metrics');
+  if(rm)rm.innerHTML=`
+    <div class="metric"><div class="lbl">שווי שוק כולל</div><div class="val">${fmtM(mv)}</div></div>
+    <div class="metric bad"><div class="lbl">עלות פרויקט</div><div class="val">${fmtM(tc)}</div></div>
+    <div class="metric ${profit>=0?'good':'bad'}"><div class="lbl">רווח / הפסד</div><div class="val">${fmtM(profit)}</div><div class="sub">ROI: ${fmtPct(roi)}</div></div>
+    <div class="metric ${roiE>20?'good':'warn'}"><div class="lbl">תשואה על הון עצמי</div><div class="val">${fmtPct(roiE)}</div><div class="sub">הון: ${fmtM(equity)}</div></div>`;
+
+  const pc=document.getElementById('profitChart');
+  if(pc){if(pCI)pCI.destroy();
+    pCI=new Chart(pc,{type:'bar',data:{labels:['רכישה','עלויות בניה','עלות מימון','שווי שוק'],
+      datasets:[{data:[pp,dc,tf,mv],backgroundColor:['#4f8cff','#34d399','#fbbf24',profit>=0?'#34d399':'#fb7185'],borderRadius:8,borderWidth:0}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{y:{ticks:{callback:v=>'₪'+Math.round(v/1000)+'K',font:{size:11},color:'#8b95aa'},grid:{color:'rgba(255,255,255,0.05)'}},
+        x:{ticks:{font:{size:11},color:'#8b95aa'},grid:{display:false}}}}});}
+
+  const sc=document.getElementById('sensitivityChart');
+  if(sc){if(sCI)sCI.destroy();
+    const vp=[-20,-15,-10,-5,0,5,10,15,20];
+    const rv=vp.map(p=>tc?parseFloat(((mv*(1+p/100)-tc)/tc*100).toFixed(1)):0);
+    sCI=new Chart(sc,{type:'line',data:{labels:vp.map(p=>(p>0?'+':'')+p+'%'),
+      datasets:[{data:rv,borderColor:'#4f8cff',backgroundColor:'rgba(79,140,255,0.08)',
+        pointBackgroundColor:rv.map(v=>v>=0?'#34d399':'#fb7185'),pointRadius:5,fill:true,tension:0.35}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{y:{ticks:{callback:v=>v+'%',font:{size:11},color:'#8b95aa'},grid:{color:'rgba(255,255,255,0.05)'}},
+        x:{ticks:{font:{size:11},color:'#8b95aa'},grid:{display:false}}}}});}
+
+  const gross=g('r1')+g('r2')+g('r3')+g('r4')+g('r5')+g('r6');
+  const vac=gross*g('vacancy_pct')/100,mgmt=gross*g('mgmt_pct')/100;
+  const net=gross-vac-mgmt,fees=g('monthly_fees'),netCf=net-totalMonthly-fees;
+  const yld=mv?(gross*12/mv*100):0;
+  const cr=document.getElementById('cashflow_result');
+  if(cr){cr.innerHTML=`<div class="grid4" style="margin-bottom:1rem">
+    <div class="metric"><div class="lbl">שכ"ד גולמי/חודש</div><div class="val">${fmt(gross)}</div></div>
+    <div class="metric"><div class="lbl">הכנסה נטו/חודש</div><div class="val">${fmt(net)}</div></div>
+    <div class="metric ${netCf>=0?'good':'bad'}"><div class="lbl">תזרים נטו/חודש</div><div class="val">${fmt(netCf)}</div></div>
+    <div class="metric purple"><div class="lbl">תשואת שכ"ד שנתית</div><div class="val">${fmtPct(yld)}</div></div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title"><i class="ti ti-list"></i> פירוט תזרים חודשי</div>
+    <div class="cf-row"><div class="item"><i class="ti ti-arrow-up"></i> שכ"ד גולמי</div><div class="amount positive">+${fmt(gross)}</div></div>
+    <div class="cf-row"><div class="item"><i class="ti ti-home-off"></i> ריקנות (${g('vacancy_pct')}%)</div><div class="amount negative">-${fmt(vac)}</div></div>
+    <div class="cf-row"><div class="item"><i class="ti ti-settings"></i> ניהול + תחזוקה (${g('mgmt_pct')}%)</div><div class="amount negative">-${fmt(mgmt)}</div></div>
+    ${loans.filter(l=>l.amount>0).map(l=>`<div class="cf-row"><div class="item"><i class="ti ti-bank"></i> ${l.name}</div><div class="amount negative">-${fmt(pmt(l.amount,l.rate,l.years))}</div></div>`).join('')}
+    <div class="cf-row"><div class="item"><i class="ti ti-file-invoice"></i> ארנונה + ועד</div><div class="amount negative">-${fmt(fees)}</div></div>
+    <div class="cf-row total-row"><div class="item">תזרים נקי חודשי</div><div class="amount ${netCf>=0?'positive':'negative'}">${netCf>=0?'+':''}${fmt(netCf)}</div></div>
+    <div class="cf-row"><div class="item">תזרים נקי שנתי</div><div class="amount ${netCf*12>=0?'positive':'negative'}">${netCf*12>=0?'+':''}${fmt(netCf*12)}</div></div>
+  </div>`;}
+
+  const cfc=document.getElementById('cashflowChart');
+  if(cfc){if(cCI)cCI.destroy();
+    const al=loans.filter(l=>l.amount>0).map(l=>l.name.substring(0,8));
+    const av=loans.filter(l=>l.amount>0).map(l=>-pmt(l.amount,l.rate,l.years));
+    cCI=new Chart(cfc,{type:'bar',data:{
+      labels:['שכ"ד גולמי','ריקנות','ניהול',...al,'ארנונה','תזרים נקי'],
+      datasets:[{data:[gross,-vac,-mgmt,...av,-fees,netCf],
+        backgroundColor:['#34d399','#fb7185','#fbbf24',...av.map(()=>'#4f8cff'),'#8b95aa',netCf>=0?'#34d399':'#fb7185'],
+        borderRadius:8,borderWidth:0}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{y:{ticks:{callback:v=>'₪'+Math.round(Math.abs(v/1000))+'K',font:{size:11},color:'#8b95aa'},grid:{color:'rgba(255,255,255,0.05)'}},
+        x:{ticks:{font:{size:11},color:'#8b95aa',maxRotation:30},grid:{display:false}}}}});}
+}
+
+loadSavedFields();
+renderCosts();
+updateTimeline();
+setTimeout(calcAll,100);
+</script>
+</body>
+</html>
