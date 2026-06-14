@@ -250,10 +250,38 @@ body{
   .card{padding:18px;}
     /* טאבים במובייל */
   .tabs{
-  gap:8px;
+   gap:8px;
   overflow-x:auto;
   flex-wrap:nowrap;
   padding-bottom:6px;
+  position:relative;
+    scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{
+  display:none;
+}
+/* אפקט שמרמז שיש עוד תוכן */
+.tabs::after{
+  content:"◀ גרור";
+  position:sticky;
+  left:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  min-width:70px;
+
+  background:linear-gradient(
+    to left,
+    transparent,
+    rgba(10,16,32,.95)
+  );
+
+  color:#60a5fa;
+  font-size:12px;
+  font-weight:700;
+
+  pointer-events:none;
 }
 
 .tab{
